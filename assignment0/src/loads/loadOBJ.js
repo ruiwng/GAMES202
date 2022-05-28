@@ -38,7 +38,7 @@ function loadOBJ(renderer, path, name) {
 							let colorMap = null;
 							if (mat.map != null) colorMap = new Texture(renderer.gl, mat.map.image);
 							// MARK: You can change the myMaterial object to your own Material instance
-
+							/*
 							let textureSample = 0;
 							let myMaterial;
 							if (colorMap != null) {
@@ -54,7 +54,8 @@ function loadOBJ(renderer, path, name) {
 									'uKd': { type: '3fv', value: mat.color.toArray() }
 								},[],VertexShader, FragmentShader);
 							}
-							
+							*/
+							let myMaterial = new PhongMaterial(mat.color.toArray(), colorMap, mat.specular.toArray(), renderer.lights[0].entity.mat.intensity);
 							let meshRender = new MeshRender(renderer.gl, mesh, myMaterial);
 							renderer.addMesh(meshRender);
 						}
