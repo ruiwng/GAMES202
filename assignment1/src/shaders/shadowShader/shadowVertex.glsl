@@ -9,6 +9,7 @@ uniform mat4 uLightMVP;
 
 varying highp vec3 vNormal;
 varying highp vec2 vTextureCoord;
+varying highp float vDepth;
 
 void main(void) {
 
@@ -16,4 +17,5 @@ void main(void) {
   vTextureCoord = aTextureCoord;
 
   gl_Position = uLightMVP * vec4(aVertexPosition, 1.0);
+  vDepth = gl_Position.z / gl_Position.w;
 }

@@ -7,6 +7,7 @@ uniform vec3 uCameraPos;
 
 varying highp vec3 vNormal;
 varying highp vec2 vTextureCoord;
+varying highp float vDepth;
 
 vec4 pack (float depth) {
     // 使用rgba 4字节共32位来存储z值,1个字节精度为1/256
@@ -21,5 +22,6 @@ vec4 pack (float depth) {
 void main(){
 
   //gl_FragColor = vec4( 1.0, 0.0, 0.0, gl_FragCoord.z);
-  gl_FragColor = pack(gl_FragCoord.z);
+  gl_FragColor = pack(vDepth);
+  // gl_FragColor = vec4(vDepth, vDepth, vDepth, 1.0);
 }

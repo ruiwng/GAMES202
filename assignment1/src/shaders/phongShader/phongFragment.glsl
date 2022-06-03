@@ -20,7 +20,7 @@ varying highp vec3 vNormal;
 #define PCF_NUM_SAMPLES NUM_SAMPLES
 #define NUM_RINGS 10
 
-#define EPS 1e-3
+#define EPS 1e-2
 #define PI 3.141592653589793
 #define PI2 6.283185307179586
 
@@ -105,7 +105,10 @@ float PCSS(sampler2D shadowMap, vec4 coords){
 
 
 float useShadowMap(sampler2D shadowMap, vec4 shadowCoord){
-  return 1.0;
+  if(shadowCoord.x < 0.0 || shadowCoord.x > 1.0 || shadowCoord.y < 0.0 || shadowCoord.y > 1.0) {
+    return 1.0;
+  }
+  return step(shadowCoord.z, unpack(texture2D(shadowMap, shadowCoord.xy)) + EPS);
 }
 
 vec3 blinnPhong() {
@@ -131,15 +134,34 @@ vec3 blinnPhong() {
   return phongColor;
 }
 
+void showShadowMap() {
+  float width = 600.0;
+  float height = 600.0;
+  if(gl_FragCoord.x < width && gl_FragCoord.y < height) {
+    float depth = unpack(texture2D(uShadowMap, gl_FragCoord.xy / vec2(width, height)));
+    gl_FragColor = vec4(depth, depth, depth, 1.0);
+  }
+}
+
 void main(void) {
 
   float visibility;
-  //visibility = useShadowMap(uShadowMap, vec4(shadowCoord, 1.0));
-  //visibility = PCF(uShadowMap, vec4(shadowCoord, 1.0));
+  vec3 shadowCoord = vPositionFromLight.xyz/vPositionFromLight.w;
+  shadowCoord.xy = (shadowCoord.xy + vec2(1.0)) * 0.5;
+  visibility = useShadowMap(uShadowMap, vec4(shadowCoord, 1.0));
+  // visibility = PCF(uShadowMap, vec4(shadowCoord, 1.0));
   //visibility = PCSS(uShadowMap, vec4(shadowCoord, 1.0));
 
   vec3 phongColor = blinnPhong();
 
   //gl_FragColor = vec4(phongColor * visibility, 1.0);
-  gl_FragColor = vec4(phongColor, 1.0);
+  gl_FragColor = vec4(phongColor * visibility, 1.0);
+  /*
+  float depth;
+  depth = texture2D(uShadowMap, shadowCoord.xy).r;
+  depth = shadowCoord.z;
+   
+  gl_FragColor = vec4(depth, depth, depth, 1.0);
+  */
+  showShadowMap();
 }
