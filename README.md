@@ -45,5 +45,5 @@ PCSS (Percentage Closer Soft Shadow), note the difference between PCSS and PCF:
 
 <img src="assignment1/images/PCSS_1.png" width ="800">
 
-<img src="assignment1/images/PCSS_1.png" width ="800">
+<img src="assignment1/images/PCSS_2.png" width ="800">
 
