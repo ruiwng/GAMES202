@@ -46,7 +46,7 @@ class DirectionalLight {
         let right = 50;
         let bottom = -10;
         let top = 60;
-        let near = -50;
+        let near = 0;
         let far = -180;
         let projectionTranslate = mat4.fromValues(
             1.0, 0.0, 0.0, 0.0,
