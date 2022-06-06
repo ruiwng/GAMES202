@@ -35,13 +35,13 @@ Naive shadow map:
 
 <img src="assignment1/images/SM_2.png" width ="800">
 
-PCF (Percentage Closer Filter):
+PCF (Percentage Closer Filter), note the difference between PCF and naive shadow map:
 
 <img src="assignment1/images/PCF_1.png" width ="800">
 
 <img src="assignment1/images/PCF_2.png" width ="800">
 
-PCSS (Percentage Closer Soft Shadow):
+PCSS (Percentage Closer Soft Shadow), note the difference between PCSS and PCF:
 
 <img src="assignment1/images/PCSS_1.png" width ="800">
 
