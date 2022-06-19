@@ -148,6 +148,7 @@ class MeshRender {
 		const gl = this.gl;
 
 		let textureNum = 0;
+		this.material.update();
 		for (let k in this.material.uniforms) {
 
 			if (this.material.uniforms[k].type == 'matrix4fv') {
