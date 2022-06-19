@@ -18,6 +18,7 @@ void main() {
     mat4 viewMatrix = uViewMatrix;
     viewMatrix = mat4(mat3(viewMatrix));
      gl_Position = uProjectionMatrix * viewMatrix * uModelMatrix * uMoveWithCamera * vec4(aVertexPosition, 1.0);
+     gl_Position.z = gl_Position.w;
     //gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
 
    vFragPos = aVertexPosition;//gl_Position.xyz;
