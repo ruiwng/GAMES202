@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "dense": "cpp",
+        "alignedvector3": "cpp"
+    }
+}
