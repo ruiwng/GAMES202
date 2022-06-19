@@ -33,4 +33,8 @@ class Material {
                 attribs: this.#flatten_attribs
             });
     }
+
+    update() {
+        
+    }
 }
