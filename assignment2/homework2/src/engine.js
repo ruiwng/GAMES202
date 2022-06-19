@@ -33,7 +33,7 @@ async function GAMES202Main() {
 	}
 
 	// Add camera
-	const camera = new THREE.PerspectiveCamera(75, gl.canvas.clientWidth / gl.canvas.clientHeight, 1e-2, 1000);
+	const camera = new THREE.PerspectiveCamera(75, gl.canvas.clientWidth / gl.canvas.clientHeight, 100, 1000);
 	camera.position.set(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
 
 	// Add resize listener
