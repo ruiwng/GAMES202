@@ -47,3 +47,24 @@ PCSS (Percentage Closer Soft Shadow), note the difference between PCSS and PCF:
 
 <img src="assignment1/images/PCSS_2.png" width ="800">
 
+Assignment 2: Precomputed Radiance Transfer
+
+I came across several problems with the base code in the process of finishing this assignment:
+
+- the mary model is intersected with itself, which is caused by low depth precision in far distance. the closer distance to near plane is, the more depth precision is used, as a result of setting near plane with a small value, far distance has no much more precision, so the near plane distance should be set as big as possible. 
+- the mary model is occluded by skybox, the implementation of skybox material in this assginment is incorrent, the NDC z coordinate of every pixel of skybox should be set as far as possbile, in order to not overlap other models. here is my solution, adding a line of code at the end of vertex shader of skybox material will be OK:
+```
+gl_Position.z = gl_Position.w;
+```
+
+PRT result:
+
+<img src="assignment2/homework2/images/GraceGathedral.png" width="800">
+
+<img src="assignment2/homework2/images/Indoor.png" width="800">
+
+<img src="assignment2/homework2/images/Skybox.png" width="800">
+
+PRT with rotation:
+
+![PRT with rotation](./assignment2/homework2/images/PRTRotation.gif)
