@@ -2,9 +2,11 @@ class PRTMaterial extends Material {
 
     constructor(vertexShader, fragmentShader) {
         let uniform = {};
-        for(let i = 0; i < 9; ++i) {
-            uniform['uPrecomputeL[' + i + ']'] = {type: '3fv', value: precomputeL[guiParams.envmapId][i]};
-        }
+        let precomputeLRGB = getMat3ValueFromRGB(precomputeL[guiParams.envmapId]);
+        uniform['uPrecomputeLR'] = {type: 'matrix3fv', value: precomputeLRGB[0]};
+        uniform['uPrecomputeLG'] = {type: 'matrix3fv', value: precomputeLRGB[1]};
+        uniform['uPrecomputeLB'] = {type: 'matrix3fv', value: precomputeLRGB[2]};
+
         super(uniform, 
             [
             'aPrecomputeLT'
@@ -12,9 +14,10 @@ class PRTMaterial extends Material {
     }
 
     update() {
-        for(let i = 0; i < 9; ++i) {
-            this.uniforms['uPrecomputeL[' + i + ']'] = {type: '3fv', value: precomputeL[guiParams.envmapId][i]};
-        }
+        let precomputeLRGB = getMat3ValueFromRGB(rotationPrecomputeL);
+        this.uniforms['uPrecomputeLR'] = {type: 'matrix3fv', value: precomputeLRGB[0]};
+        this.uniforms['uPrecomputeLG'] = {type: 'matrix3fv', value: precomputeLRGB[1]};
+        this.uniforms['uPrecomputeLB'] = {type: 'matrix3fv', value: precomputeLRGB[2]};
     }
 }
 

@@ -6,24 +6,24 @@ attribute mat3 aPrecomputeLT;
 uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uProjectionMatrix;
-uniform vec3 uPrecomputeL[9];
+uniform mat3 uPrecomputeLR;
+uniform mat3 uPrecomputeLG;
+uniform mat3 uPrecomputeLB;
 
 varying vec3 vColor;
 
 void main(void) {
     vColor = vec3(0.0, 0.0, 0.0);
 
-    vColor.r += uPrecomputeL[0].x * aPrecomputeLT[0][0] + uPrecomputeL[1].x * aPrecomputeLT[0][1] + uPrecomputeL[2].x * aPrecomputeLT[0][2]
-              + uPrecomputeL[3].x * aPrecomputeLT[1][0] + uPrecomputeL[4].x * aPrecomputeLT[1][1] + uPrecomputeL[5].x * aPrecomputeLT[1][2]
-              + uPrecomputeL[6].x * aPrecomputeLT[2][0] + uPrecomputeL[7].x * aPrecomputeLT[2][1] + uPrecomputeL[8].x * aPrecomputeLT[2][2];
-    
-    vColor.g += uPrecomputeL[0].y * aPrecomputeLT[0][0] + uPrecomputeL[1].y * aPrecomputeLT[0][1] + uPrecomputeL[2].y * aPrecomputeLT[0][2]
-              + uPrecomputeL[3].y * aPrecomputeLT[1][0] + uPrecomputeL[4].y * aPrecomputeLT[1][1] + uPrecomputeL[5].y * aPrecomputeLT[1][2]
-              + uPrecomputeL[6].y * aPrecomputeLT[2][0] + uPrecomputeL[7].y * aPrecomputeLT[2][1] + uPrecomputeL[8].y * aPrecomputeLT[2][2];
-    
-    vColor.b += uPrecomputeL[0].z * aPrecomputeLT[0][0] + uPrecomputeL[1].z * aPrecomputeLT[0][1] + uPrecomputeL[2].z * aPrecomputeLT[0][2]
-              + uPrecomputeL[3].z * aPrecomputeLT[1][0] + uPrecomputeL[4].z * aPrecomputeLT[1][1] + uPrecomputeL[5].z * aPrecomputeLT[1][2]
-              + uPrecomputeL[6].z * aPrecomputeLT[2][0] + uPrecomputeL[7].z * aPrecomputeLT[2][1] + uPrecomputeL[8].z * aPrecomputeLT[2][2];
-    
+    vColor += vec3(uPrecomputeLR[0][0], uPrecomputeLG[0][0], uPrecomputeLB[0][0]) * aPrecomputeLT[0][0];
+    vColor += vec3(uPrecomputeLR[0][1], uPrecomputeLG[0][1], uPrecomputeLB[0][1]) * aPrecomputeLT[0][1];
+    vColor += vec3(uPrecomputeLR[0][2], uPrecomputeLG[0][2], uPrecomputeLB[0][2]) * aPrecomputeLT[0][2];
+    vColor += vec3(uPrecomputeLR[1][0], uPrecomputeLG[1][0], uPrecomputeLB[1][0]) * aPrecomputeLT[1][0];
+    vColor += vec3(uPrecomputeLR[1][1], uPrecomputeLG[1][1], uPrecomputeLB[1][1]) * aPrecomputeLT[1][1];
+    vColor += vec3(uPrecomputeLR[1][2], uPrecomputeLG[1][2], uPrecomputeLB[1][2]) * aPrecomputeLT[1][2];
+    vColor += vec3(uPrecomputeLR[2][0], uPrecomputeLG[2][0], uPrecomputeLB[2][0]) * aPrecomputeLT[2][0];
+    vColor += vec3(uPrecomputeLR[2][1], uPrecomputeLG[2][1], uPrecomputeLB[2][1]) * aPrecomputeLT[2][1];
+    vColor += vec3(uPrecomputeLR[2][2], uPrecomputeLG[2][2], uPrecomputeLB[2][2]) * aPrecomputeLT[2][2];
+
     gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
 }

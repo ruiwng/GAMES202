@@ -43,14 +43,15 @@ class WebGLRenderer {
             }
 
             // Camera pass
+            let cameraModelMatrix = mat4.create();
+            mat4.fromRotation(cameraModelMatrix, timer, [0, 1, 0]);
+             // Bonus - Fast Spherical Harmonic Rotation
+            rotationPrecomputeL = getRotationPrecomputeL(precomputeL[guiParams.envmapId], cameraModelMatrix);
             for (let i = 0; i < this.meshes.length; i++) {
                 this.gl.useProgram(this.meshes[i].shader.program.glShaderProgram);
                 this.gl.uniform3fv(this.meshes[i].shader.program.uniforms.uLightPos, this.lights[l].entity.lightPos);
 
                 for (let k in this.meshes[i].material.uniforms) {
-
-                    let cameraModelMatrix = mat4.create();
-                    //mat4.fromRotation(cameraModelMatrix, timer, [0, 1, 0]);
 
                     if (k == 'uMoveWithCamera') { // The rotation of the skybox
                         gl.uniformMatrix4fv(
@@ -58,11 +59,6 @@ class WebGLRenderer {
                             false,
                             cameraModelMatrix);
                     }
-
-                    // Bonus - Fast Spherical Harmonic Rotation
-                    //let precomputeL_RGBMat3 = getRotationPrecomputeL(precomputeL[guiParams.envmapId], cameraModelMatrix);
-                    
-                    
                 }
 
                 this.meshes[i].draw(this.camera);

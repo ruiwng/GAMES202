@@ -1,5 +1,7 @@
 let precomputeLT = [];
 let precomputeL = [];
+let rotationPrecomputeL = [];
+
 var cameraPosition = [50, 0, 100];
 
 var envmap = [
@@ -33,7 +35,7 @@ async function GAMES202Main() {
 	}
 
 	// Add camera
-	const camera = new THREE.PerspectiveCamera(75, gl.canvas.clientWidth / gl.canvas.clientHeight, 100, 1000);
+	const camera = new THREE.PerspectiveCamera(75, gl.canvas.clientWidth / gl.canvas.clientHeight, 50, 1000);
 	camera.position.set(cameraPosition[0], cameraPosition[1], cameraPosition[2]);
 
 	// Add resize listener
@@ -50,7 +52,7 @@ async function GAMES202Main() {
 	cameraControls.enableRotate = true;
 	cameraControls.enablePan = true;
 	cameraControls.rotateSpeed = 0.3;
-	cameraControls.zoomSpeed = 1.0;
+	cameraControls.zoomSpeed = 0.1;
 	cameraControls.panSpeed = 0.8;
 	cameraControls.target.set(0, 0, 0);
 
@@ -112,10 +114,9 @@ async function GAMES202Main() {
 	 		precomputeL[i][j] = lineArray;
 	 	}
 	 }
-
 	// TODO: load model - Add your Material here
-	loadOBJ(renderer, 'assets/mary/', 'mary', 'PRTMaterial', boxTransform);
-	// loadOBJ(renderer, 'assets/mary/', 'mary', 'PRTMaterial', box2Transform);
+	// loadOBJ(renderer, 'assets/mary/', 'mary', 'PRTMaterial', boxTransform);
+	loadOBJ(renderer, 'assets/mary/', 'mary', 'PRTMaterial', box2Transform);
 
 	function createGUI() {
 		const gui = new dat.gui.GUI();
