@@ -47,7 +47,7 @@ PCSS (Percentage Closer Soft Shadow), note the difference between PCSS and PCF:
 
 <img src="assignment1/images/PCSS_2.png" width ="800">
 
-Assignment 2: Precomputed Radiance Transfer
+## Assignment 2: Precomputed Radiance Transfer
 
 I came across several problems with the base code in the process of finishing this assignment:
 
