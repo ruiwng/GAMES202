@@ -52,7 +52,7 @@ PCSS (Percentage Closer Soft Shadow), note the difference between PCSS and PCF:
 I came across several problems with the base code in the process of finishing this assignment:
 
 - the mary model is intersected with itself, which is caused by low depth precision in far distance. the closer distance to near plane is, the more depth precision is used, as a result of setting near plane with a small value, far distance has no much more precision, so the near plane distance should be set as big as possible. 
-- the mary model is occluded by skybox, the implementation of skybox material in this assginment is incorrent, the NDC z coordinate of every pixel of skybox should be set as far as possbile, in order to not overlap other models. here is my solution, adding a line of code at the end of vertex shader of skybox material will be OK:
+- the mary model is occluded by skybox, the implementation of skybox material in this assginment is incorrect, the NDC z coordinate of every pixel of skybox should be set as far as possible, in order to not overlap other models. here is my solution, adding a line of code at the end of vertex shader of skybox material will be OK:
 ```
 gl_Position.z = gl_Position.w;
 ```
