@@ -129,7 +129,7 @@ namespace ProjEnv
                     int index = (y * width + x) * channel;
                     Eigen::Array3f Le(images[i][index + 0], images[i][index + 1],
                                       images[i][index + 2]);
-                    for(int l = 0; l < int(SHOrder); ++l) {
+                    for(int l = 0; l <= int(SHOrder); ++l) {
                         for(int m = -l; m <= l; ++m) {
                             double sh = sh::EvalSH(l, m, Eigen::Vector3d(dir.x(), dir.y(), dir.z()).normalized());
                             float area = CalcArea(x, y, width, height);
@@ -241,6 +241,7 @@ public:
         if (m_Type == Type::Interreflection)
         {
             // TODO: leave for bonus
+            preprocessInterreflection(scene);
         }
 
         // Save in face format
@@ -266,6 +267,62 @@ public:
         }
         std::cout << "Computed SH coeffs"
                   << " to: " << transPath.str() << std::endl;
+    }
+
+    std::unique_ptr<std::vector<double>> recursiveInterreflection(const Scene *scene, const Point3f &v, const Normal3f &n, int bounceCount) {
+        const int sample_side = static_cast<int>(floor(sqrt(m_SampleCount)));
+        std::unique_ptr<std::vector<double>> coeffs(new std::vector<double>());
+        coeffs->assign(sh::GetCoefficientCount(SHOrder), 0.0);
+        if(bounceCount == 0) {
+            return coeffs;
+        }
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution<> rng(0.0, 1.0);
+        for(int t = 0; t < sample_side; t++) {
+            for(int p = 0; p < sample_side; p++) {
+                double alpha = (t + rng(gen)) / sample_side;
+                double beta = (p + rng(gen)) / sample_side;
+                double phi = 2.0 * M_PI * beta;
+                double theta = acos(2.0 * alpha  - 1.0);
+                Eigen::Array3d d = sh::ToVector(phi, theta);
+                const auto wi = Vector3f(d.x(), d.y(), d.z());
+
+                double H = n.dot(wi);
+                Intersection its;
+                if(H > 0.0 && scene->rayIntersect(Ray3f(v, wi), its)) {
+                    uint32_t idx0 = its.tri_index[0];
+                    uint32_t idx1 = its.tri_index[1];
+                    uint32_t idx2 = its.tri_index[2];
+                    auto coeff = m_TransportSHCoeffs.col(idx0) * its.bary[0] + m_TransportSHCoeffs.col(idx1) * its.bary[1] + m_TransportSHCoeffs.col(idx2) * its.bary[2];
+                    auto interreflectionCoeff = recursiveInterreflection(scene, its.p, its.shFrame.n, bounceCount - 1);
+
+                    for (int i = 0; i < int(coeffs->size()); i++) {
+                        (*coeffs)[i] += (coeff.coeff(i) + (*interreflectionCoeff)[i]) * H;
+                    }
+                }
+            }
+        }
+        double weight = 1.0 / (sample_side * sample_side);
+        for (unsigned int i = 0; i < coeffs->size(); i++) {
+            (*coeffs)[i] *= weight;
+        }
+        return coeffs;
+    };
+
+    void preprocessInterreflection(const Scene *scene) {
+        const auto mesh = scene->getMeshes()[0];
+        for(uint32_t i = 0; i < mesh->getVertexCount(); i++) {
+            const Point3f &v = mesh->getVertexPositions().col(i);
+            const Normal3f &n = mesh->getVertexNormals().col(i);
+            // std::cout << "preprocessInterreflection progress " << float(i) / mesh->getVertexCount() << std::endl;
+            printf("preprocessInterreflection progress %d%%\n", int(100 * float(i) / mesh->getVertexCount()));
+            auto interrelectionCoeff = recursiveInterreflection(scene, v, n, m_Bounce);
+            for (uint32_t j = 0; j < interrelectionCoeff->size(); j++)
+            {
+                m_TransportSHCoeffs.col(i).coeffRef(j) += (*interrelectionCoeff)[j];
+            }
+        }
     }
 
     Color3f Li(const Scene *scene, Sampler *sampler, const Ray3f &ray) const
