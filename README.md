@@ -56,6 +56,14 @@ I came across several problems with the base code in the process of finishing th
 ```
 gl_Position.z = gl_Position.w;
 ```
+as far as handling PRT rotation is concerned, a natural way is to keep original PRT light data unchanged, and generate PRT light data with rotation again and again, here I commit one mistake which takes a lot of time to figure out before I eventually find that the source of this mistake is caused by shallow copy between original PRT light data and PRT light data with rotation, here is a trival example to illustrate this problem:
+
+``` JavaScript
+let PrecomputeL = [[], [], []];
+let rotationPrecomputeL = PrecomputeL;
+rotationPrecomputeL[0] = [...];
+rotationPrecomputeL[1] = [...]; // the modification applied to rotationPrecomputeL also applied to PrecomputeL
+```
 
 PRT result:
 
