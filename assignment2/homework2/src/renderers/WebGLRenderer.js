@@ -28,7 +28,7 @@ class WebGLRenderer {
         console.assert(this.lights.length != 0, "No light");
         console.assert(this.lights.length == 1, "Multiple lights");
 
-        const timer = Date.now() * 0.0001;
+        const timer = Date.now() * 0.001;
 
         for (let l = 0; l < this.lights.length; l++) {
             // Draw light
