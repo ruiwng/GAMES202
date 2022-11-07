@@ -51,7 +51,7 @@ function GAMES202Main() {
 	cameraControls.enableRotate = true;
 	cameraControls.enablePan = true;
 	cameraControls.rotateSpeed = 0.3;
-	cameraControls.zoomSpeed = 1.0;
+	cameraControls.zoomSpeed = 0.1;
 	cameraControls.panSpeed = 0.8;
 	cameraControls.target.set(cameraTarget[0], cameraTarget[1], cameraTarget[2]);
 
@@ -85,8 +85,8 @@ function GAMES202Main() {
 	renderer.addLight(directionLight);
 
 	// Add shapes
-	loadGLTF(renderer, 'assets/cube/', 'cube1', 'SSRMaterial');
-	// loadGLTF(renderer, 'assets/cube/', 'cube2', 'SSRMaterial');
+	// loadGLTF(renderer, 'assets/cube/', 'cube1', 'SSRMaterial');
+	loadGLTF(renderer, 'assets/cube/', 'cube2', 'SSRMaterial');
 	// loadGLTF(renderer, 'assets/cave/', 'cave', 'SSRMaterial');
 
 	function createGUI() {
