@@ -76,3 +76,27 @@ PRT result:
 PRT with rotation:
 
 ![PRT with rotation](./assignment2/homework2/images/PRTRotation.gif)
+
+
+## Assignment 3: Screen Space Ray Tracing
+We use defferred rendering here to generate GBuffer (which is a bunch of textures including position/depth/diffuse/normal textures and so on of all visible points on the screen), all shading related and other attributes can be fetched from these textures.
+
+GI(Global Illumination) can be split into two parts: direct illumination and indirect illumination, which can be calculated respectively.
+- All the materials in the scenes of this assignment are Lambertain ones, whose direct illumination can be computed by:
+```C
+vec3 EvalDirectionalLight(vec2 uv) {
+  vec3 Le = GetGBufferuShadow(uv) * uLightRadiance * GetGBufferDiffuse(uv) * max(0.0, dot(uLightDir, GetGBufferNormalWorld(uv)));
+  return Le;
+}
+```
+- Indirect illumination is not as obvious as direct illumination, but it plays an important role in showing geometries that are not directly seen by the lights, adding more details in the scene. and it generally needs more computation than direct illumination. in this assignment, the computation mainly comes from two aspects:
+
+1. More samples: indirect illumination comes from all around the shading points, only several samples can not give a precise approximation to indirect illumination. Here we use Monte Carlo numerical method and importance sampling (BRDF importance sampling) technique to estimate a better effect.
+
+2. Ray marching: we cannot use real ray tracing approach here, instead for every ray we can only march step by step until it interects the world or goes out of the screen space.
+
+Sceen space GI showcases:
+
+<img src="assignment3/images/cube.png" width="800">
+
+<img src="assignment3/images/cave.png" width="800">
