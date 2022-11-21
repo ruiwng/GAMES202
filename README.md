@@ -93,7 +93,7 @@ vec3 EvalDirectionalLight(vec2 uv) {
 
 1. More samples: indirect illumination comes from all around the shading points, only several samples can not give a precise approximation to indirect illumination. Here we use Monte Carlo numerical method and importance sampling (BRDF importance sampling) technique to estimate a better effect.
 
-2. Ray marching: we cannot use real ray tracing approach here, instead for every ray we can only march step by step until it interects the world or goes out of the screen space.
+2. Ray marching: we cannot use real ray tracing approach here, instead for every ray we can only march step by step until it intersects the world or goes out of the screen space.
 
 Sceen space GI showcases:
 
