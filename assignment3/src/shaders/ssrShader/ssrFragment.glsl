@@ -122,7 +122,7 @@ vec3 GetGBufferDiffuse(vec2 uv) {
  *
  */
 vec3 EvalDiffuse(vec3 wi, vec3 wo, vec2 uv) {
-  vec3 L = GetGBufferDiffuse(uv) * max(0.0, dot(wi, GetGBufferNormalWorld(uv)));
+  vec3 L = GetGBufferDiffuse(uv) * max(0.0, dot(wi, GetGBufferNormalWorld(uv))) * INV_PI;
   return L;
 }
 
@@ -132,7 +132,7 @@ vec3 EvalDiffuse(vec3 wi, vec3 wo, vec2 uv) {
  *
  */
 vec3 EvalDirectionalLight(vec2 uv) {
-  vec3 Le = GetGBufferuShadow(uv) * uLightRadiance * GetGBufferDiffuse(uv) * max(0.0, dot(uLightDir, GetGBufferNormalWorld(uv)));
+  vec3 Le = GetGBufferuShadow(uv) * uLightRadiance * GetGBufferDiffuse(uv) * max(0.0, dot(uLightDir, GetGBufferNormalWorld(uv))) * INV_PI;
   return Le;
 }
 
@@ -189,7 +189,7 @@ void main() {
     vec3 worldDir = localDir.x * t + localDir.y * b + localDir.z * n;
     isHit = RayMarch(vPosWorld.xyz, worldDir, hitPos);
     if(isHit) {
-      LIndirect += EvalDirectionalLight(GetScreenCoordinate(hitPos)) * GetGBufferDiffuse(uv) * max(0.0, dot(worldDir, n)) / pdf;
+      LIndirect += EvalDirectionalLight(GetScreenCoordinate(hitPos)) * GetGBufferDiffuse(uv) * INV_PI * max(0.0, dot(worldDir, n)) / pdf;
       // LIndirect += EvalDirectionalLight(GetScreenCoordinate(hitPos));
     }
   }
