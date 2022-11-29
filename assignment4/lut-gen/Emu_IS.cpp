@@ -27,23 +27,34 @@ Vec3f ImportanceSampleGGX(Vec2f Xi, Vec3f N, float roughness) {
     float a = roughness * roughness;
 
     //TODO: in spherical space - Bonus 1
-
+    float theta = atan(roughness * sqrtf(Xi.x / (1.0f - Xi.x)));
+    float phi = 2.0f * PI * Xi.y;
 
     //TODO: from spherical space to cartesian space - Bonus 1
- 
+    Vec3f wi(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
 
     //TODO: tangent coordinates - Bonus 1
-
+    Vec3f T, B;
+    if(abs(dot(N, Vec3f(1.0f, 0.0f, 0.0f))) <= abs(dot(N, Vec3f(0.0f, 1.0f, 0.0f)))) {
+        T = Vec3f(1.0f, 0.0f, 0.0f);
+    } else {
+        T = Vec3f(0.0f, 1.0f, 0.0f);
+    }
+    B = normalize(cross(N, T));
+    T = cross(B, N);
 
     //TODO: transform H to tangent space - Bonus 1
-    
-    return Vec3f(1.0f);
+    return T * wi.x + B * wi.y + N * wi.z;
 }
 
 float GeometrySchlickGGX(float NdotV, float roughness) {
-    // TODO: To calculate Schlick G1 here - Bonus 1
     
-    return 1.0f;
+    float k = (roughness * roughness) / 2.0f;
+    
+    float nom = NdotV;
+    float denom = NdotV * (1.0f - k) + k;
+
+    return nom / denom;
 }
 
 float GeometrySmith(float roughness, float NoV, float NoL) {
@@ -54,7 +65,7 @@ float GeometrySmith(float roughness, float NoV, float NoL) {
 }
 
 Vec3f IntegrateBRDF(Vec3f V, float roughness) {
-
+    Vec3f brdf(0.0f);
     const int sample_count = 1024;
     Vec3f N = Vec3f(0.0, 0.0, 1.0);
     for (int i = 0; i < sample_count; i++) {
@@ -68,13 +79,15 @@ Vec3f IntegrateBRDF(Vec3f V, float roughness) {
         float NoV = std::max(dot(N, V), 0.0f);
         
         // TODO: To calculate (fr * ni) / p_o here - Bonus 1
-
-
+        float G = GeometrySmith(roughness, NoV, NoL);
+        float weight = VoH * GeometrySmith(roughness, NoV, NoL) / (NoV * NoH);
+        // assert(weight < 10.0f);
+        brdf += Vec3f(1.0) * std::min(weight, 1.0f);
         // Split Sum - Bonus 2
         
     }
 
-    return Vec3f(1.0f);
+    return brdf / sample_count;
 }
 
 int main() {

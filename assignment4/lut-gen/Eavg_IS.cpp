@@ -26,14 +26,46 @@ Vec2f Hammersley(uint32_t i, uint32_t N) {
 }
 
 Vec3f ImportanceSampleGGX(Vec2f Xi, Vec3f N, float roughness) {
-
     float a = roughness * roughness;
 
-    // TODO: Copy the code from your previous work - Bonus 1
+    //TODO: in spherical space - Bonus 1
+    float theta = atan(roughness * sqrtf(Xi.x / (1.0f - Xi.x)));
+    float phi = 2.0f * PI * Xi.y;
 
-    return Vec3f(1.0f);
+    //TODO: from spherical space to cartesian space - Bonus 1
+    Vec3f wi(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
+
+    //TODO: tangent coordinates - Bonus 1
+    Vec3f T, B;
+    if (abs(dot(N, Vec3f(1.0f, 0.0f, 0.0f))) <= abs(dot(N, Vec3f(0.0f, 1.0f, 0.0f)))) {
+        T = Vec3f(1.0f, 0.0f, 0.0f);
+    }
+    else {
+        T = Vec3f(0.0f, 1.0f, 0.0f);
+    }
+    B = normalize(cross(N, T));
+    T = cross(B, N);
+
+    //TODO: transform H to tangent space - Bonus 1
+    return T * wi.x + B * wi.y + N * wi.z;
 }
 
+float GeometrySchlickGGX(float NdotV, float roughness) {
+
+    float k = (roughness * roughness) / 2.0f;
+
+    float nom = NdotV;
+    float denom = NdotV * (1.0f - k) + k;
+
+    return nom / denom;
+}
+
+float GeometrySmith(float roughness, float NoV, float NoL) {
+    float ggx2 = GeometrySchlickGGX(NoV, roughness);
+    float ggx1 = GeometrySchlickGGX(NoL, roughness);
+
+    return ggx1 * ggx2;
+}
 
 Vec3f IntegrateEmu(Vec3f V, float roughness, float NdotV, Vec3f Ei) {
     Vec3f Eavg = Vec3f(0.0f);
@@ -52,10 +84,15 @@ Vec3f IntegrateEmu(Vec3f V, float roughness, float NdotV, Vec3f Ei) {
         float NoV = std::max(dot(N, V), 0.0f);
 
         // TODO: To calculate Eavg here - Bonus 1
+        float G = GeometrySmith(roughness, NoV, NoL);
+        float weight = VoH * GeometrySmith(roughness, NoV, NoL) / (NoV * NoH);
+        // assert(weight < 10.0f);
+        Eavg += Vec3f(1.0) * Ei * std::min(weight, 1.0f);
+        // Split Sum - Bonus 2
         
     }
 
-    return Vec3f(1.0);
+    return Eavg / sample_count;
 }
 
 void setRGB(int x, int y, float alpha, unsigned char *data) {
@@ -90,7 +127,7 @@ int main() {
         // | 
         // | rough（i）
         // Flip it, if you want the data written to the texture
-        uint8_t data[resolution * resolution * 3];
+        uint8_t* data = new uint8_t[resolution * resolution * 3];
         float step = 1.0 / resolution;
         Vec3f Eavg = Vec3f(0.0);
 		for (int i = 0; i < resolution; i++) 
@@ -115,6 +152,7 @@ int main() {
 		}
 		stbi_flip_vertically_on_write(true);
 		stbi_write_png("GGX_Eavg_LUT.png", resolution, resolution, channel, data, 0);
+        delete[] data;
 	}
 	stbi_image_free(Edata);
     return 0;
