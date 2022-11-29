@@ -100,3 +100,20 @@ Sceen space GI showcases:
 <img src="assignment3/images/cube.png" width="800">
 
 <img src="assignment3/images/cave.png" width="800">
+
+## Assignment 4: Kulla-Conty BRDF
+Emu integration computed by Monte Carlo:
+
+<img src="assignment4/images/GGX_E_MC_LUT.png" width="400">
+
+Emu integration with importance sampling:
+
+<img src="assignment4/images/GGX_E_LUT.png" width="400">
+
+Emu average:
+
+<img src="assignment4/images/GGX_Eavg_LUT.png" width="400">
+
+Realtime Kulla-Conty multi-bounding BRDF final effect (upper row) compared with microfacet BRDF (lower row), note the brightness between two material models when roughness is low:
+
+<img src="assignment4/images/Kulla-Conty.png" width="800">
