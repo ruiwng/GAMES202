@@ -117,3 +117,10 @@ Emu average:
 Realtime Kulla-Conty multi-bounding BRDF final effect (upper row) compared with microfacet BRDF (lower row), note the brightness between two material models when roughness is low:
 
 <img src="assignment4/images/Kulla-Conty.png" width="800">
+
+## Assignment 5: Real-time Ray Tracing Denoising
+
+Several issues are worth mentioning in this assignment:
+1. When we do the filtering operation, there is one step needs computing the dot product of normals of two pixels, if the normals are all normalized, it's perfectly fine. but as a matter of fact, this is not the case, as a result of this, calculating arccos of this dot product is illeal, as this dot product is out of the range [-1, 1], so a clamp operation to the dot product is needed here.
+2. Just as the first problem, this problem is also caused by the given data. the world matrix of the object may not be invertible, which will cause crash when you try to tranfrom object from world space to local space with the inverse of the matrix. to avoid this problem, I modify the Inverse function to return the state whether the matrix is invertible or not, if not, I will not accumulate color value for this specified pixel.
+
