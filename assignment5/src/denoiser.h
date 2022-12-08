@@ -8,6 +8,12 @@
 #include "util/image.h"
 #include "util/mathutil.h"
 
+enum ProcessType {
+    SINGLE_FRAME_DENOISE_ONLY = 0,
+    ACCUMULATION_ONLY,
+    SINGLE_FRAME_DENOISE_AND_ACCUMULATION
+};
+
 struct FrameInfo {
   public:
     Buffer2D<Float3> m_beauty;
@@ -29,7 +35,7 @@ class Denoiser {
     void TemporalAccumulation(const Buffer2D<Float3> &curFilteredColor);
     Buffer2D<Float3> Filter(const FrameInfo &frameInfo);
 
-    Buffer2D<Float3> ProcessFrame(const FrameInfo &frameInfo);
+    Buffer2D<Float3> ProcessFrame(const FrameInfo &frameInfo, ProcessType type);
 
   public:
     FrameInfo m_preFrameInfo;
@@ -40,8 +46,10 @@ class Denoiser {
 
     float m_alpha = 0.2f;
     float m_sigmaPlane = 0.1f;
-    float m_sigmaColor = 0.6f;
+    float m_sigmaColor = 32.0f;  // 4.8f
     float m_sigmaNormal = 0.1f;
     float m_sigmaCoord = 32.0f;
     float m_colorBoxK = 1.0f;
+
+    ProcessType m_processType;
 };

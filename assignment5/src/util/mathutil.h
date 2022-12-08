@@ -165,6 +165,6 @@ class Matrix4x4 {
         return os;
     }
 
-    friend Matrix4x4 Inverse(const Matrix4x4 &mat);
+    friend Matrix4x4 Inverse(const Matrix4x4 &mat, bool& isSuccess);
     friend Matrix4x4 Transpose(const Matrix4x4 &mat);
 };

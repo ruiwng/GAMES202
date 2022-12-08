@@ -38,23 +38,31 @@ FrameInfo LoadFrameInfo(const filesystem::path &inputDir, const int &idx) {
 }
 
 void Denoise(const filesystem::path &inputDir, const filesystem::path &outputDir,
-             const int &frameNum) {
+             const int &frameNum, ProcessType type) {
     Denoiser denoiser;
     for (int i = 0; i < frameNum; i++) {
         std::cout << "Frame: " << i << std::endl;
         FrameInfo frameInfo = LoadFrameInfo(inputDir, i);
-        Buffer2D<Float3> image = denoiser.ProcessFrame(frameInfo);
+        Buffer2D<Float3> image = denoiser.ProcessFrame(frameInfo, type);
+        char name[200];
+        sprintf(name, "result_%02d.exr", i);
         std::string filename =
-            (outputDir / ("result_" + std::to_string(i) + ".exr")).str();
+            (outputDir / name).str();
         WriteFloat3Image(image, filename);
     }
 }
 
-int main() {
+// argv[1]: inputDir
+// argv[2]: outputDir
+// argv[3]: frameNum
+// argv[4]: denoise type 0(single frame denoise), 1(accumulation), 2(single frame denoise and accumulation)
+
+int main(int argc, char *argv[]) {
     // Box
-    filesystem::path inputDir("examples/box/input");
-    filesystem::path outputDir("examples/box/output");
-    int frameNum = 20;
+    filesystem::path inputDir(argv[1]);
+    filesystem::path outputDir(argv[2]);
+    int frameNum = atoi(argv[3]);
+    ProcessType type = static_cast<ProcessType>(atoi(argv[4]));
 
     /*
     // Pink room
@@ -63,6 +71,6 @@ int main() {
     int frameNum = 80;
     */
 
-    Denoise(inputDir, outputDir, frameNum);
+    Denoise(inputDir, outputDir, frameNum, type);
     return 0;
 }
