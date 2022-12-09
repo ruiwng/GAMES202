@@ -124,3 +124,55 @@ Several issues are worth mentioning in this assignment:
 1. When we do the filtering operation, there is one step needs computing the dot product of normals of two pixels, if the normals are all normalized, it's perfectly fine. but as a matter of fact, this is not the case, as a result of this, calculating arccos of this dot product is illeal, as this dot product is out of the range [-1, 1], so a clamp operation to the dot product is needed here.
 2. Just as the first problem, this problem is also caused by the given data. the world matrix of the object may not be invertible, which will cause crash when you try to tranfrom object from world space to local space with the inverse of the matrix. to avoid this problem, I modify the Inverse function to return the state whether the matrix is invertible or not, if not, I will not accumulate color value for this specified pixel.
 
+To automically generate final result video, I write a script tool to do this (which can only run on Windows):
+```bat
+ffmpeg -framerate 15 -i ./examples/box/input/beauty_%%d.exr -start_number 0 -c:v libx264 -r 30 -pix_fmt yuv420p ./results/box-original.mp4
+.\build\Release\Denoise.exe examples/box/input examples/box/filter 20 0
+ffmpeg -framerate 15 -i ./examples/box/filter/result_%%02d.exr -start_number 0 -c:v libx264 -r 30 -pix_fmt yuv420p ./results/box-filter.mp4
+.\build\Release\Denoise.exe examples/box/input examples/box/project 20 1
+ffmpeg -framerate 15 -i ./examples/box/project/result_%%02d.exr -start_number 0 -c:v libx264 -r 30 -pix_fmt yuv420p ./results/box-project.mp4
+.\build\Release\Denoise.exe examples/box/input examples/box/result 20 2
+ffmpeg -framerate 15 -i ./examples/box/result/result_%%02d.exr -start_number 0 -c:v libx264 -r 30 -pix_fmt yuv420p ./results/box-result.mp4
+
+ffmpeg -framerate 15 -i ./examples/pink-room/input/beauty_%%d.exr -start_number 0 -c:v libx264 -r 30 -pix_fmt yuv420p ./results/pinkroom-original.mp4
+.\build\Release\Denoise.exe examples/pink-room/input examples/pink-room/filter 80 0
+ffmpeg -framerate 15 -i ./examples/pink-room/filter/result_%%02d.exr -start_number 0 -c:v libx264 -r 30 -pix_fmt yuv420p ./results/pinkroom-filter.mp4
+.\build\Release\Denoise.exe examples/pink-room/input examples/pink-room/project 80 1
+ffmpeg -framerate 15 -i ./examples/pink-room/project/result_%%02d.exr -start_number 0 -c:v libx264 -r 30 -pix_fmt yuv420p ./results/pinkroom-project.mp4
+.\build\Release\Denoise.exe examples/pink-room/input examples/pink-room/result 80 2
+ffmpeg -framerate 15 -i ./examples/pink-room/result/result_%%02d.exr -start_number 0 -c:v libx264 -r 30 -pix_fmt yuv420p ./results/pinkroom-result.mp4
+
+```
+And here are the final results:
+
+Box original video:
+
+![Box original video](./assignment5/results/box-original.gif)
+
+Box video with single frame denoise only:
+
+![Box video with single frame denoise only](./assignment5/results/box-filter.gif)
+
+Box video with frames accumulation only:
+
+![Box video with frames accumulation only](./assignment5/results/box-project.gif)
+
+Box video final result with single frame denoise and frames accumulation:
+
+![Box video final result with single frame denoise and frames accumulation](./assignment5/results/box-result.gif)
+
+Pink room original video:
+
+![Box original video](./assignment5/results/pinkroom-original.gif)
+
+Pink room with single frame denoise only:
+
+![Pink room with single frame denoise only](./assignment5/results/pinkroom-filter.gif)
+
+Pink room with frames accumulation only:
+
+![Pink room with frames accumulation only](./assignment5/results/pinkroom-project.gif)
+
+Pink room final result with single frame denoise and frames accumulation:
+
+![Pink room final result with single frame denoise and frames accumulation](./assignment5/results/pinkroom-result.gif)
